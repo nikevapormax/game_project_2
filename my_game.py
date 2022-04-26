@@ -6,17 +6,15 @@ from enemy_class import Enemy
 # 게임 생성을 위한 초기화(필수)
 pygame.init()
 
-# 게임 화면 크기 설정 / 게임 타이틀 설정
+# 게임 화면 설정 / 게임 타이틀 설정
 screen_w = 800 # 가로
 screen_h = 640 # 세로
-screen = pygame.display.set_mode((screen_w, screen_h)) # 가로, 세로 크기의 게임창 생성
+screen = pygame.display.set_mode((screen_w, screen_h))  # 가로, 세로 크기의 게임창 생성
+background = pygame.image.load('img/back2.png')         # 게임 창의 배경화면
 pygame.display.set_caption("RUN") # 게임 이름
 
 # FPS 설정
 clock = pygame.time.Clock()
-
-# 게임 창의 배경화면
-background = pygame.image.load('img/back2.png')
 
 # 나의 메인 캐릭터
 hero = pygame.image.load('img/hero.png')
@@ -24,15 +22,12 @@ hero = pygame.image.load('img/hero.png')
 hero_size = hero.get_rect().size # 이미지의 크기를 구해옴;
 hero_w = hero_size[0] # 캐릭터 가로 길이
 hero_h = hero_size[1] # 캐릭터 세로 길이
-hero_x_pos = (screen_w / 2) - (hero_w / 2) # 캐릭터의 x 좌표
-hero_y_pos = screen_h - hero_h # 캐릭터의 y 좌표
+hero_x_pos = (screen_w / 2) - (hero_w / 2)      # 캐릭터의 x 좌표
+hero_y_pos = screen_h - hero_h                    # 캐릭터의 y 좌표
 
 # 캐릭터가 이동할 좌표
 move_x = 0
 move_y = 0
-
-# 캐릭터의 이동 속도
-hero_speed = 0.4
 
 #  적 캐릭터
 enemies = [
@@ -58,20 +53,12 @@ coor_y = random.randrange(0, screen_h - enemy_h) # 적의 y좌표
 
 # 적 캐릭터들이 들어올 리스트
 enemy_li = []
+# Enemy(랜덤한 x좌표, 랜덤한 y좌표, 인덱스번호, 적의 x축 이동방향(왼:-3, 오:3), 적의 y축 이동방향, 적 속도)
 enemy_li.append(Enemy(coor_x, coor_y, 0, 3, -6, enemy_speed[0]))
 enemy_li.append(Enemy(coor_x, coor_y, 1, -3, -6, enemy_speed[1]))
 enemy_li.append(Enemy(coor_x, coor_y, 2, 3, -6, enemy_speed[2]))
 enemy_li.append(Enemy(coor_x, coor_y, 3, -3, -6, enemy_speed[3]))
 enemy_li.append(Enemy(coor_x, coor_y, 4, 3, -6, enemy_speed[4]))
-
-# enemy_li.append({
-#     'pos_x' : random.randrange(0, screen_w - enemy_w), # 적의 x 좌표
-#     'pos_y':  random.randrange(0, screen_h - enemy_h), # 적의 y좌표
-#     'e_idx': 0, # 적 이미지 인덱스
-#     'enemy_move_x': 3, # 적의 x축 이동 방향 (현재는 오른쪽, 왼쪽은 -3)
-#     'enemy_move_y' : -6, # 적의 y 축 이동 방향
-#     'init_speed_y': enemy_speed[4] # y 속도
-# })
 
 # 게임 폰트 정의
 game_font = pygame.font.Font(None, 40)
@@ -97,13 +84,13 @@ while running:
         # pygame의 키보드 이벤트를 정의하는 부분
         if event.type == pygame.KEYDOWN: # 내가 키보드를 눌렀어 만약에
             if event.key == pygame.K_LEFT:  # 내가 누른게 왼쪽 방향키라면
-                move_x -= 5                         # 왼쪽으로 가야되니까 까줘야지
+                move_x -= 3                         # 왼쪽으로 가야되니까 까줘야지
             elif event.key == pygame.K_RIGHT: # 내가 누른게 오른쪽 방향키라면
-                move_x += 5                         # 오른쪽으로 가니까 더하기
+                move_x += 3                         # 오른쪽으로 가니까 더하기
             elif event.key == pygame.K_UP:      # 내가 누른게 위 방향키라면
-                move_y -= 5                               # 위로 가니까 까줘야지
+                move_y -= 3                               # 위로 가니까 까줘야지
             elif event.key == pygame.K_DOWN:    # 내가 누른게 아래 방향키라면
-                move_y += 5                             # 아래로 가니까 더하기
+                move_y += 3                             # 아래로 가니까 더하기
         # 만약 게임하다가 방향키를 떼면 멈춤
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -129,7 +116,7 @@ while running:
         hero_y_pos = screen_h - hero_h  # hero의 사진이 딱 바닥에 닿을 때의 y좌표를 준다.
 
     # 적 위치 정의
-    for enemy in enemy_li:
+    for enemy in enemy_li: # enemy_li 안에 들어있는 요소들은 클래스! 클래스의 값을 불러올 때는 클래스.값으로 불러옴!!
         # 가로벽에 닿았을 때 적의 이동위치를 변경해주자
         if enemy.pos_x < 0 or enemy.pos_x > (screen_w - enemy_w):
             enemy.enemy_move_x = enemy.enemy_move_x * -1
@@ -148,7 +135,7 @@ while running:
     # 캐릭터 rect 정보
     hero_rect = hero.get_rect()
     hero_rect.left = hero_x_pos
-    hero_rect.top = hero_y_pos
+    hero_rect.bottom = hero_y_pos
 
     for enemy in enemy_li:
         enemy_pos_x = enemy.pos_x
@@ -158,7 +145,7 @@ while running:
         # 적 rect 정보
         enemy_rect = enemies[enemy_index].get_rect()
         enemy_rect.left = enemy_pos_x
-        enemy_rect.top = enemy_pos_y
+        enemy_rect.bottom = enemy_pos_y
 
         # 충돌한다잉~
         if hero_rect.colliderect(enemy_rect):
